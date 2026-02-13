@@ -73,7 +73,7 @@ export function ContactTab() {
               <Whatsapp size={24} color="#4bd659"/>
             </div>
             <div>
-              <div className="text-xs text-slate-500 font-mono">GITHUB</div>
+              <div className="text-xs text-slate-500 font-mono">WHATSAPP</div>
               <a
                 href={`https://wa.me/55${userData.contact.whatsapp.replaceAll("(", "").replaceAll(")", "").replaceAll(" ", "").replaceAll("-", "")}`}
                 target="_blank"
