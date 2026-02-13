@@ -1,0 +1,656 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Gamepad2, 
+  Code, 
+  User, 
+  Mail, 
+  ExternalLink, 
+  Github, 
+  Linkedin, 
+  Terminal,
+  Cpu,
+  Trophy,
+  ChevronRight,
+  GraduationCap,
+  Briefcase,
+  MessageSquare,
+  Send,
+  Bot,
+  Loader2
+} from 'lucide-react';
+
+// ==========================================
+// DADOS DO USUÁRIO (Baseado no CV)
+// ==========================================
+const userData = {
+  name: "Warlike R. S. Soares",
+  role: "Software Developer",
+  location: "Parnamirim, RN",
+  phone: "(84) 99173-3188",
+  bio: "Desenvolvedor de software e graduado em Tecnologia da Informação com sólida experiência na criação de soluções tecnológicas, abrangendo desenvolvimento web (ReactJS, Next.JS), mobile (React Native) e sistemas de gestão. Possuo forte proficiência em linguagens como JavaScript, TypeScript e Python, além de habilidades analíticas e de resolução de problemas comprovadas.",
+  languages: [
+    { name: "Português", level: "Nativo" },
+    { name: "Inglês", level: "Fluente" },
+    { name: "Francês", level: "Intermediário" }
+  ],
+  education: [
+    {
+      institution: "UFRN - Universidade Federal do Rio Grande do Norte",
+      degree: "Mestrado em Matemática Aplicada e Estatística (PPGMAE)",
+      period: "Início: 2026",
+      status: "Futuro"
+    },
+    {
+      institution: "UFRN - Universidade Federal do Rio Grande do Norte",
+      degree: "Bacharelado em Tecnologia da Informação",
+      period: "Conclusão: 2024",
+      status: "Concluído"
+    },
+    {
+      institution: "Rocketseat",
+      degree: "Full Stack Web Development (React.js/Next.js)",
+      period: "Formação Complementar",
+      status: "Certificado"
+    },
+    {
+      institution: "IMD/UFRN",
+      degree: "Desenvolvimento de Jogos Digitais",
+      period: "Formação Complementar",
+      status: "Certificado"
+    }
+  ],
+  experience: [
+    {
+      company: "Freelancer - Tecnologia da Informação",
+      role: "Software Developer",
+      period: "Período Recente",
+      description: "Atuação em projetos sob demanda, aplicando arquitetura e lógica de programação para soluções personalizadas. Realização de Anotação de Dados e revisão rigorosa de código-fonte para treinamento e refinamento de modelos de Inteligência Artificial."
+    },
+    {
+      company: "Teleperformance CRM S.A.",
+      role: "Intérprete Bilíngue e Suporte Técnico",
+      period: "2022 - 2024",
+      description: "Atuação como intérprete de ponte (Inglês-Português), garantindo precisão terminológica em comunicações técnicas em tempo real. Resolução de conflitos, processamento de solicitações e manutenção de dados em sistemas CRM complexos para clientes internacionais."
+    }
+  ],
+  skills: [
+    { name: "JavaScript / TypeScript", level: 95, type: "lang" },
+    { name: "Python", level: 90, type: "lang" },
+    { name: "C# / C++", level: 80, type: "lang" },
+    { name: "ReactJS / Next.JS", level: 92, type: "web" },
+    { name: "React Native", level: 85, type: "mobile" },
+    { name: "HTML / CSS / SCSS", level: 90, type: "web" },
+    { name: "API & DB Integration", level: 88, type: "backend" },
+    { name: "Git / Versioning", level: 85, type: "tools" }
+  ],
+  projects: [
+    {
+      id: 1,
+      title: "ig.news",
+      category: "SaaS / Blog",
+      image: "https://placehold.co/600x400/1e293b/eba417?text=ig.news",
+      tech: ["Next.js", "Stripe", "FaunaDB"],
+      description: "Site de notícias com sistema de assinatura. Integração com Stripe para pagamentos e controle de acesso a conteúdos exclusivos (posts completos).",
+      link: "https://ignews-blog-nine.vercel.app/"
+    },
+    {
+      id: 2,
+      title: "Space Traveling",
+      category: "Web / UI",
+      image: "https://placehold.co/600x400/1e293b/ff57b2?text=Space+Traveling",
+      tech: ["Next.js", "TypeScript", "Prismic CMS"],
+      description: "Projeto de blog com interface vertical moderna e minimalista. Foco em tipografia, carregamento estático e experiência de leitura fluida.",
+      link: "https://space-traveling-lovat.vercel.app/"
+    },
+    {
+      id: 3,
+      title: "Toda a Noite",
+      category: "Game Dev",
+      image: "https://placehold.co/600x400/1e293b/4ade80?text=Toda+a+Noite",
+      tech: ["Visual Novel", "Narrative Design", "Itch.io"],
+      description: "Jogo do gênero Visual Novel hospedado no Itch.io. Focado em narrativa interativa e imersão do jogador através de escolhas.",
+      link: "https://klebinho.itch.io/toda-a-noite"
+    }
+  ],
+  contact: {
+    email: "warlikerichard@hotmail.com",
+    github: "warlikerichard",
+    linkedin: "warlike-richard-da-silva-soares" // Ajustado baseada no nome, verificar URL real
+  }
+};
+
+// ==========================================
+// COMPONENTES AUXILIARES
+// ==========================================
+
+const StatBar = ({ label, value, color = "bg-green-500" }) => (
+  <div className="mb-4">
+    <div className="flex justify-between mb-1">
+      <span className="text-sm font-mono text-slate-300">{label}</span>
+      <span className="text-sm font-mono text-slate-500">{value}%</span>
+    </div>
+    <div className="w-full bg-slate-800 rounded-full h-2.5 border border-slate-700">
+      <div 
+        className={`h-2.5 rounded-full ${color} transition-all duration-1000 ease-out`} 
+        style={{ width: `${value}%` }}
+      ></div>
+    </div>
+  </div>
+);
+
+const ProjectCard = ({ project }) => (
+  <div className="group relative bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-green-400 transition-all duration-300 hover:shadow-[0_0_15px_rgba(74,222,128,0.2)] flex flex-col h-full">
+    <div className="aspect-video w-full overflow-hidden relative">
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent z-10 opacity-60"></div>
+      <img 
+        src={project.image} 
+        alt={project.title}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-80 group-hover:opacity-100" 
+      />
+    </div>
+    <div className="p-4 flex flex-col flex-grow">
+      <div className="flex justify-between items-start mb-2">
+        <h3 className="text-xl font-bold text-white group-hover:text-green-400 leading-tight">{project.title}</h3>
+        <span className="px-2 py-1 text-xs bg-slate-900 border border-slate-600 rounded text-slate-400 whitespace-nowrap ml-2">
+          {project.category}
+        </span>
+      </div>
+      <p className="text-slate-400 text-sm mb-4 line-clamp-3 flex-grow">{project.description}</p>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {project.tech.map((t, i) => (
+          <span key={i} className="text-xs text-green-300 bg-green-900/30 px-2 py-1 rounded border border-green-900/50">
+            {t}
+          </span>
+        ))}
+      </div>
+      
+      {project.link && (
+        <a 
+          href={project.link} 
+          target="_blank" 
+          rel="noreferrer"
+          className="w-full py-2 bg-slate-700 hover:bg-green-600 text-white rounded font-mono text-sm transition-colors flex items-center justify-center gap-2 mt-auto"
+        >
+          <ExternalLink size={16} />
+          Acessar (Accéder)
+        </a>
+      )}
+    </div>
+  </div>
+);
+
+// Componente de Chat AI usando Gemini API
+const AIChat = () => {
+  const [messages, setMessages] = useState([
+    { role: 'system', content: `Olá! Eu sou o assistente virtual do portfólio do Warlike. Posso responder perguntas sobre a experiência dele com React, histórico profissional ou formação acadêmica. O que gostaria de saber?` }
+  ]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSend = async (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const userMsg = input;
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setIsTyping(true);
+
+    try {
+      // Configuração da API do Gemini
+      const apiKey = ""; // A chave é injetada pelo ambiente
+      const systemContext = `
+        Você é um assistente útil e profissional para o portfólio de Warlike R. S. Soares.
+        Responda perguntas estritamente baseadas nestes dados: ${JSON.stringify(userData)}.
+        Se a pergunta for sobre algo não listado, diga que não tem essa informação mas sugere entrar em contato pelo email.
+        Mantenha um tom técnico, mas amigável. Responda em português.
+        O usuário está interessado em contratar ou saber mais sobre Warlike.
+      `;
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            { role: 'user', parts: [{ text: systemContext + "\n\nPergunta do usuário: " + userMsg }] }
+          ],
+          generationConfig: {
+            maxOutputTokens: 250,
+          }
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
+
+      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "Desculpe, não consegui processar sua pergunta agora.";
+
+      setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+
+    } catch (error) {
+      console.error("Erro AI:", error);
+      setMessages(prev => [...prev, { role: 'assistant', content: "Erro de conexão com a IA. Por favor, tente novamente mais tarde." }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  return (
+    <div className="h-[600px] flex flex-col bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-2xl">
+      <div className="bg-slate-800 p-4 border-b border-slate-700 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/50">
+          <Bot size={24} className="text-green-400" />
+        </div>
+        <div>
+          <h3 className="text-white font-bold">Warlike AI Assistant</h3>
+          <p className="text-xs text-green-400 flex items-center gap-1">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Online
+          </p>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/50">
+        {messages.map((msg, idx) => (
+          <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[80%] p-3 rounded-lg text-sm ${
+              msg.role === 'user' 
+                ? 'bg-green-600 text-white rounded-br-none' 
+                : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-none'
+            }`}>
+              {msg.content}
+            </div>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-slate-800 p-3 rounded-lg rounded-bl-none border border-slate-700">
+              <Loader2 size={16} className="animate-spin text-green-500" />
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <form onSubmit={handleSend} className="p-4 bg-slate-800 border-t border-slate-700 flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Pergunte sobre minhas habilidades..."
+          className="flex-1 bg-slate-950 border border-slate-600 rounded p-2 text-white focus:border-green-500 focus:outline-none"
+        />
+        <button 
+          type="submit" 
+          disabled={!input.trim() || isTyping}
+          className="bg-green-600 hover:bg-green-500 text-white p-2 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <Send size={20} />
+        </button>
+      </form>
+    </div>
+  );
+};
+
+const Navigation = ({ activeTab, setActiveTab }) => {
+  const tabs = [
+    { id: 'profile', icon: User, label: 'Perfil' },
+    { id: 'skills', icon: Cpu, label: 'Habilidades' },
+    { id: 'projects', icon: Gamepad2, label: 'Projetos' },
+    { id: 'ai-chat', icon: MessageSquare, label: 'AI Chat' },
+    { id: 'contact', icon: Mail, label: 'Contato' },
+  ];
+
+  return (
+    <nav className="fixed bottom-0 left-0 w-full md:static md:w-64 md:h-screen bg-slate-900 border-t md:border-t-0 md:border-r border-slate-700 z-50 flex flex-col">
+      <div className="hidden md:flex flex-col items-center p-8 border-b border-slate-700 bg-slate-900/50">
+        <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-700 rounded-full mb-4 flex items-center justify-center shadow-[0_0_20px_rgba(74,222,128,0.3)] border-2 border-slate-800">
+          <Terminal size={40} className="text-white drop-shadow-md" />
+        </div>
+        <h1 className="text-white font-bold text-lg text-center leading-tight">{userData.name}</h1>
+        <p className="text-green-400 text-xs font-mono text-center mt-2 px-2 py-1 bg-green-900/20 rounded border border-green-900/50">
+          {userData.role}
+        </p>
+      </div>
+      
+      <div className="flex md:flex-col justify-around md:justify-start w-full h-16 md:h-auto overflow-x-auto md:overflow-visible md:pt-4">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 md:w-full p-4 flex flex-col md:flex-row items-center md:gap-4 transition-all duration-200 group
+              ${activeTab === tab.id 
+                ? 'bg-slate-800 text-green-400 border-t-2 md:border-t-0 md:border-l-4 border-green-400' 
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+              }`}
+          >
+            <tab.icon size={20} className={`transition-transform duration-300 ${activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+            <span className="text-[10px] md:text-sm font-mono mt-1 md:mt-0 whitespace-nowrap">{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="hidden md:block mt-auto p-6">
+         <div className="text-[10px] text-slate-500 font-mono text-center border border-slate-800 rounded p-2 bg-slate-950/50">
+           SYSTEM STATUS: ONLINE <br/>
+           LOC: {userData.location}
+           <span className="text-green-500 animate-pulse ml-2">●</span>
+         </div>
+      </div>
+    </nav>
+  );
+};
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('profile');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-green-500 font-mono">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-slate-800 border-t-green-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Terminal size={20} className="text-green-500/50" />
+          </div>
+        </div>
+        <p className="animate-pulse mt-4 tracking-widest">LOADING ASSETS...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col md:flex-row font-sans selection:bg-green-500 selection:text-slate-900 overflow-hidden">
+      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      <main className="flex-1 relative overflow-hidden flex flex-col h-screen">
+        {/* Background Grid Effect */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(30,41,59,0.3)_1px,transparent_1px),linear-gradient(90deg,rgba(30,41,59,0.3)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0"></div>
+
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-12 pb-24 md:pb-12 z-10">
+          
+          {/* Header Mobile */}
+          <div className="md:hidden flex items-center gap-4 mb-8 pb-4 border-b border-slate-800">
+            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-900/20">
+              <Terminal size={24} className="text-slate-900" />
+            </div>
+            <div>
+              <h1 className="text-white font-bold text-lg">{userData.name}</h1>
+              <p className="text-green-400 text-xs font-mono">{userData.role}</p>
+            </div>
+          </div>
+
+          <div className="max-w-5xl mx-auto">
+            
+            {/* PERFIL TAB */}
+            {activeTab === 'profile' && (
+              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <section className="bg-slate-900/80 p-8 rounded-2xl border border-slate-800 backdrop-blur-sm shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <Code size={120} />
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                    Olá, eu sou <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">{userData.name}</span>
+                  </h2>
+                  <p className="text-lg text-slate-300 leading-relaxed max-w-3xl mb-8 border-l-4 border-green-500 pl-6">
+                    {userData.bio}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-4">
+                    <a href={`mailto:${userData.contact.email}`} className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded font-bold transition-all shadow-lg shadow-green-900/20 flex items-center gap-2 hover:-translate-y-1">
+                      <Mail size={18} /> Contatar Agora
+                    </a>
+                    <button onClick={() => setActiveTab('projects')} className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-6 py-3 rounded font-bold transition-all flex items-center gap-2 hover:-translate-y-1">
+                      Ver Portfolio <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </section>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Experience Section */}
+                  <section>
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                      <Briefcase className="text-green-400" /> Experiência Profissional
+                    </h3>
+                    <div className="space-y-6">
+                      {userData.experience.map((exp, i) => (
+                        <div key={i} className="relative pl-8 border-l border-slate-800 hover:border-green-500/50 transition-colors">
+                          <div className="absolute -left-1.5 top-1.5 w-3 h-3 bg-slate-800 border border-green-500 rounded-full"></div>
+                          <div className="bg-slate-900 p-5 rounded-lg border border-slate-800 hover:bg-slate-800 transition-colors">
+                            <h4 className="text-white font-bold text-lg">{exp.role}</h4>
+                            <div className="text-green-400 text-sm font-mono mb-2">{exp.company} | {exp.period}</div>
+                            <p className="text-slate-400 text-sm leading-relaxed">
+                              {exp.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  {/* Education Section */}
+                  <section>
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                      <GraduationCap className="text-blue-400" /> Formação Acadêmica
+                    </h3>
+                    <div className="space-y-4">
+                      {userData.education.map((edu, i) => (
+                        <div key={i} className="bg-slate-900 p-5 rounded-lg border border-slate-800 flex items-start gap-4 hover:border-blue-500/30 transition-colors">
+                          <div className="mt-1 min-w-[40px]">
+                            {edu.status === 'Concluído' ? (
+                              <div className="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center text-green-400">
+                                <Trophy size={16} />
+                              </div>
+                            ) : (
+                              <div className="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-slate-500">
+                                <Code size={16} />
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="text-white font-bold">{edu.degree}</h4>
+                            <p className="text-slate-400 text-sm">{edu.institution}</p>
+                            <span className="inline-block mt-2 px-2 py-1 bg-slate-800 rounded text-xs text-blue-300 font-mono border border-slate-700">
+                              {edu.period}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              </div>
+            )}
+
+            {/* SKILLS TAB */}
+            {activeTab === 'skills' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                  <Code className="text-green-400" /> Habilidades Técnicas
+                </h2>
+                <p className="text-slate-400">Visão geral das competências técnicas e linguísticas.</p>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
+                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2 border-b border-slate-800 pb-2">
+                      <span className="w-2 h-6 bg-blue-500 rounded"></span> Linguagens & Web
+                    </h3>
+                    {userData.skills.filter(s => ['lang', 'web'].includes(s.type)).map((skill, i) => (
+                      <StatBar key={i} label={skill.name} value={skill.level} color="bg-blue-500" />
+                    ))}
+                  </div>
+
+                  <div className="space-y-8">
+                    <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
+                      <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <span className="w-2 h-6 bg-purple-500 rounded"></span> Mobile & Tools
+                      </h3>
+                      {userData.skills.filter(s => !['lang', 'web'].includes(s.type)).map((skill, i) => (
+                        <StatBar key={i} label={skill.name} value={skill.level} color="bg-purple-500" />
+                      ))}
+                    </div>
+
+                    <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
+                      <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span className="w-2 h-6 bg-yellow-500 rounded"></span> Idiomas
+                      </h3>
+                      <div className="flex flex-wrap gap-3">
+                        {userData.languages.map((lang, i) => (
+                          <div key={i} className="bg-slate-950 px-4 py-2 rounded border border-slate-700 flex items-center gap-2">
+                            <span className="text-white font-bold">{lang.name}</span>
+                            <span className="text-xs text-yellow-500 font-mono px-2 py-0.5 bg-yellow-900/20 rounded">
+                              {lang.level}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PROJECTS TAB */}
+            {activeTab === 'projects' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex justify-between items-end border-b border-slate-800 pb-4">
+                  <div>
+                    <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                      <Trophy className="text-yellow-400" /> Portfólio de Projetos
+                    </h2>
+                    <p className="text-slate-400 mt-2">Destaques da trajetória profissional e acadêmica.</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+                  {userData.projects.map(project => (
+                    <ProjectCard key={project.id} project={project} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* AI CHAT TAB */}
+            {activeTab === 'ai-chat' && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                  <Bot className="text-green-400" /> Entrevista Virtual
+                </h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="md:col-span-2">
+                    <AIChat />
+                  </div>
+                  <div className="space-y-6">
+                    <div className="bg-slate-900 p-6 rounded-xl border border-slate-800">
+                      <h3 className="font-bold text-white mb-3">Sugestões de Perguntas:</h3>
+                      <ul className="space-y-3">
+                        {["Quais suas principais habilidades?", "Fale sobre sua experiência na Teleperformance.", "O que você estudou na UFRN?", "Você trabalha com Inteligência Artificial?"].map((q, i) => (
+                          <li key={i}>
+                            <button 
+                              className="text-left text-sm text-slate-400 hover:text-green-400 hover:bg-slate-800 p-2 rounded w-full transition-colors flex items-center gap-2"
+                              onClick={() => {
+                                // Esta funcionalidade requer refatoração para passar o setInput para o componente pai ou usar contexto.
+                                // Simplificado para este exemplo visual.
+                                navigator.clipboard.writeText(q);
+                                alert("Pergunta copiada! Cole no chat.");
+                              }}
+                            >
+                              <MessageSquare size={14} /> {q}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-blue-900/20 p-6 rounded-xl border border-blue-900/50">
+                      <p className="text-sm text-blue-200">
+                        Esta IA foi treinada com o contexto do meu currículo atualizado. Sinta-se à livre para perguntar detalhes técnicos.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* CONTACT TAB */}
+            {activeTab === 'contact' && (
+              <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="text-center mb-10">
+                  <h2 className="text-3xl font-bold text-white mb-2">Vamos Trabalhar Juntos?</h2>
+                  <p className="text-slate-400">Estou disponível para novas oportunidades em desenvolvimento de software.</p>
+                </div>
+
+                <div className="bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-xl relative overflow-hidden">
+                   {/* Decorative elements */}
+                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500"></div>
+
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-4 p-4 bg-slate-950 rounded-lg border border-slate-800">
+                      <div className="bg-green-900/20 p-3 rounded-full text-green-500">
+                        <Mail size={24} />
+                      </div>
+                      <div>
+                        <div className="text-xs text-slate-500 font-mono">EMAIL</div>
+                        <a href={`mailto:${userData.contact.email}`} className="text-white hover:text-green-400 transition-colors font-medium">
+                          {userData.contact.email}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 p-4 bg-slate-950 rounded-lg border border-slate-800">
+                      <div className="bg-blue-900/20 p-3 rounded-full text-blue-500">
+                        <Linkedin size={24} />
+                      </div>
+                      <div>
+                        <div className="text-xs text-slate-500 font-mono">LINKEDIN</div>
+                        <a href={`https://linkedin.com/in/${userData.contact.linkedin}`} target="_blank" rel="noreferrer" className="text-white hover:text-blue-400 transition-colors font-medium">
+                          Ver Perfil Profissional
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 p-4 bg-slate-950 rounded-lg border border-slate-800">
+                      <div className="bg-slate-800 p-3 rounded-full text-white">
+                        <Github size={24} />
+                      </div>
+                      <div>
+                        <div className="text-xs text-slate-500 font-mono">GITHUB</div>
+                        <a href={`https://github.com/${userData.contact.github}`} target="_blank" rel="noreferrer" className="text-white hover:text-slate-300 transition-colors font-medium">
+                          @{userData.contact.github}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 text-center">
+                    <p className="text-slate-500 text-sm">
+                      Localização: {userData.location} • {userData.phone}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
