@@ -37,7 +37,7 @@ export function ProfileTab({ setActiveTab }: ProfileTabProps) {
             onClick={() => setActiveTab("projects")}
             className="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-6 py-3 rounded font-bold transition-all flex items-center gap-2 hover:-translate-y-1"
           >
-            Ver Portfolio <ChevronRight size={18} />
+            Ver Portfólio <ChevronRight size={18} />
           </button>
         </div>
       </section>
