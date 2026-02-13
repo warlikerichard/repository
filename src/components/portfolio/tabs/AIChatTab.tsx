@@ -45,7 +45,7 @@ export function AIChatTab() {
           <div className="bg-blue-900/20 p-6 rounded-xl border border-blue-900/50">
             <p className="text-sm text-blue-200">
               Esta IA foi treinada com o contexto do meu currículo atualizado.
-              Sinta-se à livre para perguntar detalhes técnicos.
+              Sinta-se livre para perguntar detalhes técnicos.
             </p>
           </div>
         </div>

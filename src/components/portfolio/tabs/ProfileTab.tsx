@@ -26,15 +26,16 @@ export function ProfileTab({ setActiveTab }: ProfileTabProps) {
         </p>
 
         <div className="flex flex-wrap gap-4">
-          <a
-            href={`mailto:${userData.contact.email}`}
-            className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded font-bold transition-all shadow-lg shadow-green-900/20 flex items-center gap-2 hover:-translate-y-1"
+          <button
+            type="button"
+            onClick={() => setActiveTab("contact")}
+            className="cursor-pointer bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded font-bold transition-all shadow-lg shadow-green-900/20 flex items-center gap-2 hover:-translate-y-1"
           >
             <Mail size={18} /> Contatar Agora
-          </a>
+          </button>
           <button
             onClick={() => setActiveTab("projects")}
-            className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-6 py-3 rounded font-bold transition-all flex items-center gap-2 hover:-translate-y-1"
+            className="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-6 py-3 rounded font-bold transition-all flex items-center gap-2 hover:-translate-y-1"
           >
             Ver Portfolio <ChevronRight size={18} />
           </button>

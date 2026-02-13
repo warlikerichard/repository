@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Terminal } from "lucide-react";
+import Image from "next/image";
 import { userData } from "@/lib/data/userData";
 import {
   Navigation,
@@ -41,8 +41,14 @@ export function PortfolioDashboard() {
         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-12 pb-24 md:pb-12 z-10">
           {/* Header Mobile */}
           <div className="md:hidden flex items-center gap-4 mb-8 pb-4 border-b border-slate-800">
-            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-900/20">
-              <Terminal size={24} className="text-slate-900" />
+            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center shadow-lg shadow-green-900/20 ring-2 ring-green-500/30">
+              <Image
+                src="/PortfolioImage.png"
+                alt={userData.name}
+                width={48}
+                height={48}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <h1 className="text-white font-bold text-lg">{userData.name}</h1>

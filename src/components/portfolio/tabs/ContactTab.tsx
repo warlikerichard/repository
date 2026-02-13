@@ -1,4 +1,5 @@
 import { Mail, Linkedin, Github } from "lucide-react";
+import { BsWhatsapp as Whatsapp} from "react-icons/bs";
 import { userData } from "@/lib/data/userData";
 
 export function ContactTab() {
@@ -66,7 +67,26 @@ export function ContactTab() {
               </a>
             </div>
           </div>
+
+          <div className="flex items-center gap-4 p-4 bg-slate-950 rounded-lg border border-slate-800">
+            <div className="bg-slate-800 p-3 rounded-full text-white">
+              <Whatsapp size={24} color="#4bd659"/>
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 font-mono">GITHUB</div>
+              <a
+                href={`https://wa.me/55${userData.contact.whatsapp.replaceAll("(", "").replaceAll(")", "").replaceAll(" ", "").replaceAll("-", "")}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-white hover:text-slate-300 transition-colors font-medium"
+              >
+                {userData.contact.whatsapp}
+              </a>
+            </div>
+          </div>
         </div>
+
+
 
         <div className="mt-8 text-center">
           <p className="text-slate-500 text-sm">

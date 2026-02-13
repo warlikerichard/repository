@@ -68,7 +68,7 @@ export const userData: UserData = {
       id: 1,
       title: "ig.news",
       category: "SaaS / Blog",
-      image: "https://placehold.co/600x400/1e293b/eba417?text=ig.news",
+      image: "ignews.png",
       tech: ["Next.js", "Stripe", "FaunaDB"],
       description:
         "Site de notícias com sistema de assinatura. Integração com Stripe para pagamentos e controle de acesso a conteúdos exclusivos (posts completos).",
@@ -78,7 +78,7 @@ export const userData: UserData = {
       id: 2,
       title: "Space Traveling",
       category: "Web / UI",
-      image: "https://placehold.co/600x400/1e293b/ff57b2?text=Space+Traveling",
+      image: "spacetraveling.png",
       tech: ["Next.js", "TypeScript", "Prismic CMS"],
       description:
         "Projeto de blog com interface vertical moderna e minimalista. Foco em tipografia, carregamento estático e experiência de leitura fluida.",
@@ -88,7 +88,7 @@ export const userData: UserData = {
       id: 3,
       title: "Toda a Noite",
       category: "Game Dev",
-      image: "https://placehold.co/600x400/1e293b/4ade80?text=Toda+a+Noite",
+      image: "TodaANoite.png",
       tech: ["Visual Novel", "Narrative Design", "Itch.io"],
       description:
         "Jogo do gênero Visual Novel hospedado no Itch.io. Focado em narrativa interativa e imersão do jogador através de escolhas.",
@@ -98,6 +98,7 @@ export const userData: UserData = {
   contact: {
     email: "warlikerichard@hotmail.com",
     github: "warlikerichard",
-    linkedin: "warlike-richard-da-silva-soares",
+    linkedin: "warlike-richard",
+    whatsapp: "(84) 99173-3188",
   },
 };

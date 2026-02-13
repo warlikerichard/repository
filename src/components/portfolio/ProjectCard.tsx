@@ -25,7 +25,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             {project.category}
           </span>
         </div>
-        <p className="text-slate-400 text-sm mb-4 line-clamp-3 flex-grow">
+        <p className="text-slate-400 text-sm mb-4 flex-grow">
           {project.description}
         </p>
         <div className="flex flex-wrap gap-2 mb-4">
@@ -47,7 +47,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             className="w-full py-2 bg-slate-700 hover:bg-green-600 text-white rounded font-mono text-sm transition-colors flex items-center justify-center gap-2 mt-auto"
           >
             <ExternalLink size={16} />
-            Acessar (Accéder)
+            Acessar
           </a>
         )}
       </div>

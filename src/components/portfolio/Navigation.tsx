@@ -1,12 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import {
   User,
   Cpu,
   Gamepad2,
   MessageSquare,
   Mail,
-  Terminal,
 } from "lucide-react";
 import { userData } from "@/lib/data/userData";
 import type { LucideIcon } from "lucide-react";
@@ -30,8 +30,14 @@ export function Navigation({ activeTab, setActiveTab }: NavigationProps) {
   return (
     <nav className="fixed bottom-0 left-0 w-full md:static md:w-64 md:h-screen bg-slate-900 border-t md:border-t-0 md:border-r border-slate-700 z-50 flex flex-col">
       <div className="hidden md:flex flex-col items-center p-8 border-b border-slate-700 bg-slate-900/50">
-        <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-700 rounded-full mb-4 flex items-center justify-center shadow-[0_0_20px_rgba(74,222,128,0.3)] border-2 border-slate-800">
-          <Terminal size={40} className="text-white drop-shadow-md" />
+        <div className="w-24 h-24 rounded-full mb-4 flex items-center justify-center overflow-hidden shadow-[0_0_20px_rgba(74,222,128,0.3)] border-2 border-slate-800 ring-2 ring-green-500/30">
+          <Image
+            src="/PortfolioImage.png"
+            alt={userData.name}
+            width={96}
+            height={96}
+            className="w-full h-full object-cover"
+          />
         </div>
         <h1 className="text-white font-bold text-lg text-center leading-tight">
           {userData.name}
@@ -46,7 +52,7 @@ export function Navigation({ activeTab, setActiveTab }: NavigationProps) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 md:w-full p-4 flex flex-col md:flex-row items-center md:gap-4 transition-all duration-200 group
+            className={`cursor-pointer flex-1 md:w-full p-4 flex flex-col md:flex-row items-center md:gap-4 transition-all duration-200 group
               ${
                 activeTab === tab.id
                   ? "bg-slate-800 text-green-400 border-t-2 md:border-t-0 md:border-l-4 border-green-400"
